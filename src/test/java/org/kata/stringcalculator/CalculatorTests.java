@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CalculatorTests {
 
@@ -53,9 +54,27 @@ public class CalculatorTests {
     @Test
     public void newLineWithCommaSeparatedNumbers() {
         String numbers = "1\n2,3\n4\n6,9";
-        int expectedSum = 25;
 
-        assertEquals(expectedSum, calculator.add(numbers), "The sum of comma-separated numbers is incorrect");
+        assertEquals(25, calculator.add(numbers), "The sum of comma-separated numbers is incorrect");
+    }
+
+    @DisplayName("When the input string has consecutively more than one separator between two numbers, " +
+            "the input is considered invalid and an exception is thrown")
+    @Test
+    public void multipleConsecutiveSeparatorsInvalidInput() {
+        String numbers = "1,\n2,3\n,4\n6,9";
+
+        assertThrows(IllegalArgumentException.class, () -> calculator.add(numbers),
+                "The Illegal Argument Exception was not raised for an invalid input");
+    }
+
+    @DisplayName("When the input has a first line specifying a custom number separator," +
+            " it should be used to calculate the sum")
+    @Test
+    public void customNumberSeparator() {
+        String numbers = "//;\\n1;2;3;4;6;9";
+
+        assertEquals(25, calculator.add(numbers), "The sum of custom separator numbers is incorrect");
     }
 
     private int getRandomInt(int origin, int bound) {
