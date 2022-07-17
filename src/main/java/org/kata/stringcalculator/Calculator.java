@@ -8,23 +8,33 @@ public class Calculator {
     private static final String[] DEFAULT_SEPARATORS = {"\n", ","};
 
     public int add(String numbers) {
+        String sumExpression;
         if (numbers == null || numbers.isBlank())
             return 0;
         else if (NumberUtils.isDigits(numbers)) {
             return NumberUtils.toInt(numbers);
         } else if (numbers.startsWith("//") && numbers.indexOf('\n') == 3) {
             char customSeparator = numbers.charAt(2);
-            String numbersToSum = numbers.substring(4);
-            numbersToSum = numbersToSum.replace(customSeparator, '+');
-            return add(numbersToSum);
+            sumExpression = numbers.substring(4);
+            sumExpression = prepareExpression(sumExpression, String.valueOf(customSeparator));
         } else {
-            for (String separator : DEFAULT_SEPARATORS) {
-                numbers = numbers.replace(separator, "+");
-            }
-
-            DoubleEvaluator evaluator = new DoubleEvaluator();
-            return evaluator.evaluate(numbers).intValue();
+            sumExpression = prepareExpression(numbers, DEFAULT_SEPARATORS);
         }
+
+        return evaluateMathExpression(sumExpression);
+    }
+
+    private String prepareExpression(String input, String... separators) {
+        String result = input;
+        for (String separator : separators) {
+            result = result.replace(separator, "+");
+        }
+        return result;
+    }
+
+    private int evaluateMathExpression(String exp) {
+        DoubleEvaluator evaluator = new DoubleEvaluator();
+        return evaluator.evaluate(exp).intValue();
     }
 
 }
