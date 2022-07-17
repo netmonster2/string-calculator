@@ -3,12 +3,14 @@ package org.kata.stringcalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CalculatorTests {
 
@@ -76,6 +78,24 @@ public class CalculatorTests {
 
         assertEquals(25, calculator.add(numbers), "The sum of custom separator numbers is incorrect");
     }
+
+    @DisplayName("When negative numbers are present, an exceptions should be raised mentioning them")
+    @Test
+    public void negativeNumbersNotAccepted() {
+        String numbers = "1\n-2,-3\n,4\n-6,9";
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> calculator.add(numbers),
+                "Negative numbers are not allowed");
+
+        assertAll("All negative numbers should be mentioned in the exception message",
+                () -> assertTrue(StringUtils.isNotBlank(ex.getMessage())
+                        && ex.getMessage().contains("-2"), "The -2 was not mentioned in the exception"),
+                () -> assertTrue(StringUtils.isNotBlank(ex.getMessage())
+                        && ex.getMessage().contains("-3"), "The -3 was not mentioned in the exception"),
+                () -> assertTrue(StringUtils.isNotBlank(ex.getMessage())
+                        && ex.getMessage().contains("-6"), "The -6 was not mentioned in the exception"));
+    }
+
 
     private int getRandomInt(int origin, int bound) {
         return ThreadLocalRandom.current().nextInt(origin, bound);
