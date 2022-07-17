@@ -28,7 +28,7 @@ public class CalculatorTests {
     @DisplayName("When the input string has comma-separated numbers, their sum should be returned")
     @Test
     public void commaSeparatedNumbers() {
-        int sum = calculator.add("1,2,4");
-        assertEquals(7, sum, "The sum of comma-separated numbers is incorrect");
+        int sum = calculator.add("1,2,4,3");
+        assertEquals(10, sum, "The sum of comma-separated numbers is incorrect");
     }
 }
