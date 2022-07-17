@@ -10,6 +10,7 @@ public class Calculator {
         else if (NumberUtils.isDigits(numbers)) {
             return NumberUtils.toInt(numbers);
         } else {
+            numbers = numbers.replace("\n", ",");
             String firstPart = numbers.substring(0, numbers.indexOf(",") + 1).replace(",", "");
             int firstNumber = NumberUtils.isDigits(firstPart) ? NumberUtils.toInt(firstPart) : 0;
 
