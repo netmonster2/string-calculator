@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +30,26 @@ public class CalculatorTests {
     @DisplayName("When the input string has comma-separated numbers, their sum should be returned")
     @Test
     public void commaSeparatedNumbers() {
-        int sum = calculator.add("1,2,4,3");
-        assertEquals(10, sum, "The sum of comma-separated numbers is incorrect");
+        int numberOfParts = getRandomInt(3, 100);
+
+        StringBuilder generatedNumbersBuilder = new StringBuilder();
+        int expectedSum = 0;
+
+        for (int i = 0; i < numberOfParts; i++) {
+            int random = getRandomInt(0, 500);
+            expectedSum += random;
+            generatedNumbersBuilder
+                    .append(random)
+                    .append(",");
+        }
+        generatedNumbersBuilder.deleteCharAt(generatedNumbersBuilder.length() - 1);
+
+        int actualSum = calculator.add(generatedNumbersBuilder.toString());
+
+        assertEquals(expectedSum, actualSum, "The sum of comma-separated numbers is incorrect");
+    }
+
+    private int getRandomInt(int origin, int bound) {
+        return ThreadLocalRandom.current().nextInt(origin, bound);
     }
 }

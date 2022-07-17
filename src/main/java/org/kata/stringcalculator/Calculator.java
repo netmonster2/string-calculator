@@ -1,16 +1,20 @@
 package org.kata.stringcalculator;
 
-import java.util.Arrays;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class Calculator {
 
     public int add(String numbers) {
         if (numbers == null || numbers.isBlank())
             return 0;
-        else if (numbers.contains(",")) {
-            String[] numberArray = numbers.split(",");
-            return Arrays.stream(numberArray).map(Integer::parseInt).reduce(0, Integer::sum);
-        } else
-            return -1;
+        else if (NumberUtils.isDigits(numbers)) {
+            return NumberUtils.toInt(numbers);
+        } else {
+            String firstPart = numbers.substring(0, numbers.indexOf(",") + 1).replace(",", "");
+            int firstNumber = NumberUtils.isDigits(firstPart) ? NumberUtils.toInt(firstPart) : 0;
+
+            String remainder = numbers.substring(numbers.indexOf(",") + 1);
+            return firstNumber + add(remainder);
+        }
     }
 }
