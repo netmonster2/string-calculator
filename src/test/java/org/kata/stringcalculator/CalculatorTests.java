@@ -49,6 +49,15 @@ public class CalculatorTests {
         assertEquals(expectedSum, actualSum, "The sum of comma-separated numbers is incorrect");
     }
 
+    @DisplayName("When the input string has comma-separated and newline-separated values, their sum should be returned")
+    @Test
+    public void newLineWithCommaSeparatedNumbers() {
+        String numbers = "1\n2,3\n4\n6,9";
+        int expectedSum = 25;
+
+        assertEquals(expectedSum, calculator.add(numbers), "The sum of comma-separated numbers is incorrect");
+    }
+
     private int getRandomInt(int origin, int bound) {
         return ThreadLocalRandom.current().nextInt(origin, bound);
     }
