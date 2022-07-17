@@ -24,4 +24,11 @@ public class CalculatorTests {
                 () -> assertEquals(0, calculator.add("       "), "The sum of a whitespace string should be 0"),
                 () -> assertEquals(0, calculator.add(null), "The sum of a null string should be 0"));
     }
+
+    @DisplayName("When the input string has comma-separated numbers, their sum should be returned")
+    @Test
+    public void commaSeparatedNumbers() {
+        int sum = calculator.add("1,2,4");
+        assertEquals(7, sum, "The sum of comma-separated numbers is incorrect");
+    }
 }
