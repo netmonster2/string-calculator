@@ -3,6 +3,10 @@ package org.kata.stringcalculator;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Calculator {
 
     private static final String[] DEFAULT_SEPARATORS = {"\n", ","};
@@ -29,6 +33,17 @@ public class Calculator {
         for (String separator : separators) {
             result = result.replace(separator, "+");
         }
+
+        if (result.contains("-")) {
+            List<String> negativeNumbers = new ArrayList<>();
+            Arrays.stream(result.split("\\+")).forEach(element -> {
+                if (NumberUtils.toInt(element) < 0)
+                    negativeNumbers.add(element);
+            });
+
+            throw new IllegalArgumentException("Negative numbers are present: " + negativeNumbers);
+        }
+
         return result;
     }
 
