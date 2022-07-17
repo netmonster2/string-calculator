@@ -18,6 +18,7 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: jUnitVersion
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: jUnitVersion
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: apacheCommonsVersion
+    implementation group: 'com.fathzer', name: 'javaluator', version: '3.0.3'
 }
 
 test {
