@@ -72,7 +72,7 @@ public class CalculatorTests {
             " it should be used to calculate the sum")
     @Test
     public void customNumberSeparator() {
-        String numbers = "//;\\n1;2;3;4;6;9";
+        String numbers = "//;\n1;2;3;4;6;9";
 
         assertEquals(25, calculator.add(numbers), "The sum of custom separator numbers is incorrect");
     }
