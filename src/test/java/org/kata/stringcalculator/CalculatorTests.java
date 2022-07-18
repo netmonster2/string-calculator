@@ -30,6 +30,13 @@ public class CalculatorTests {
                 () -> assertEquals(0, calculator.add(null), "The sum of a null string should be 0"));
     }
 
+    @DisplayName("When only one number is provided as input, it should be returned as it is")
+    @Test
+    public void oneNumberSum() {
+        String numbers = "34";
+        assertEquals(34, calculator.add(numbers), "The number provided as input is not returned");
+    }
+
     @DisplayName("When the input string has comma-separated numbers, their sum should be returned")
     @Test
     public void commaSeparatedNumbers() {
@@ -60,29 +67,32 @@ public class CalculatorTests {
         assertEquals(25, calculator.add(numbers), "The sum of comma-separated numbers is incorrect");
     }
 
-    @DisplayName("When the input string has consecutively more than one separator between two numbers, " +
+    @DisplayName("When the input string has consecutively more than one delimiter between two numbers, " +
             "the input is considered invalid and an exception is thrown")
     @Test
-    public void multipleConsecutiveSeparatorsInvalidInput() {
+    public void multipleConsecutiveDelimitersInvalidInput() {
         String numbers = "1,\n2,3\n,4\n6,9";
 
-        assertThrows(IllegalArgumentException.class, () -> calculator.add(numbers),
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> calculator.add(numbers),
                 "The Illegal Argument Exception was not raised for an invalid input");
+
+        assertEquals("Only one delimiter is allowed between two numbers", ex.getMessage(),
+                "Exception message is incorrect");
     }
 
-    @DisplayName("When the input has a first line specifying a custom number separator," +
+    @DisplayName("When the input has a first line specifying a custom number delimiter," +
             " it should be used to calculate the sum")
     @Test
-    public void customNumberSeparator() {
-        String numbers = "//;\n1;2;3;4;6;9";
+    public void customNumberDelimiter() {
+        String numbers = "//a\n1a2a3a4a6a9";
 
-        assertEquals(25, calculator.add(numbers), "The sum of custom separator numbers is incorrect");
+        assertEquals(25, calculator.add(numbers), "The sum of custom delimiter numbers is incorrect");
     }
 
     @DisplayName("When negative numbers are present, an exceptions should be raised mentioning them")
     @Test
     public void negativeNumbersNotAccepted() {
-        String numbers = "1\n-2,-3\n,4\n-6,9";
+        String numbers = "//;\n1;-2;3;-4;6;9;-11";
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> calculator.add(numbers),
                 "Negative numbers are not allowed");
@@ -91,9 +101,40 @@ public class CalculatorTests {
                 () -> assertTrue(StringUtils.isNotBlank(ex.getMessage())
                         && ex.getMessage().contains("-2"), "The -2 was not mentioned in the exception"),
                 () -> assertTrue(StringUtils.isNotBlank(ex.getMessage())
-                        && ex.getMessage().contains("-3"), "The -3 was not mentioned in the exception"),
+                        && ex.getMessage().contains("-4"), "The -4 was not mentioned in the exception"),
                 () -> assertTrue(StringUtils.isNotBlank(ex.getMessage())
-                        && ex.getMessage().contains("-6"), "The -6 was not mentioned in the exception"));
+                        && ex.getMessage().contains("-11"), "The -11 was not mentioned in the exception"));
+    }
+
+    @DisplayName("When an invalid input is given, an exception should be raised")
+    @Test
+    public void cornerCases() {
+        String alphabeticCharsPresent = "//;\n1;2;3;4;6;b";
+        String startingWithDelimiter = "//;\n;1;2;3;4;6";
+        String endingWithDelimiter = "//;\n1;2;3;4;6;";
+
+        assertAll("Invalid input should raise the respective exception",
+                () -> {
+                    IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                            () -> calculator.add(alphabeticCharsPresent),
+                            "Exception was not raised for an input with alphabetic characters");
+                    assertEquals("Only numbers and delimiters are allowed", ex.getMessage(),
+                            "The exception doesn't have the correct message");
+                },
+                () -> {
+                    IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                            () -> calculator.add(startingWithDelimiter),
+                            "Exception was not raised for an input starting with delimiter");
+                    assertEquals("Starting or ending with delimiter is not allowed", ex.getMessage(),
+                            "The exception doesn't have the correct message");
+                },
+                () -> {
+                    IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                            () -> calculator.add(endingWithDelimiter),
+                            "Exception was not raised for an input ending with delimiter");
+                    assertEquals("Starting or ending with delimiter is not allowed", ex.getMessage(),
+                            "The exception doesn't have the correct message");
+                });
     }
 
 
