@@ -24,3 +24,10 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/testReport")
+    reportOn getTasksByName("test", true)
+}
+
+test.finalizedBy 'testReport'
